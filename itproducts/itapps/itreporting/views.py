@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from.import views
+
 
 def home(request):
     return render(request, 'itproducts/home.html')
@@ -18,3 +20,4 @@ def smarttv(request):
     return render(request, 'itproducts/smarttv.html')
 def comment(request):
     return render(request, 'itproducts/comment.html')
+
