@@ -1,36 +1,83 @@
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from .models import Review
 from django.shortcuts import render
 from.import views
-from .models import Review
-from django.views.generic import ListView, DetailView
+from djano.urls import reverse
 
 def home(request):
-    return render(request, 'itproducts/home.html',{'title': 'Home'})
+    return render(request, 'itproducts/home.html', {'title': 'Home'})
+
+
 def about(request):
-   return render(request, 'itproducts/about.html',{'title': 'About us'})
+    return render(request, 'itproducts/about.html', {'title': 'About us'})
+
+
 def contact(request):
-    return render(request, 'itproducts/contact.html'{'title': 'Contact'})
+    return render(request, 'itproducts/contact.html', {'title': 'Contact'})
+
+
 def products(request):
-    return render(request, 'itproducts/products.html'{'title': 'Products'})
+    return render(request, 'itproducts/products.html', {'title': 'Products'})
+
+
 def smartphone(request):
-    return render(request, 'itproducts/smartphone.html'{'title': 'smartphones'})
+    return render(request, 'itproducts/smartphone.html', {'title': 'smartphones'})
+
+
 def smartwatches(request):
-    return render(request, 'itproducts/smartwatches.html'{'title': 'smartwatches'})
+    return render(request, 'itproducts/smartwatches.html', {'title': 'smartwatches'})
+
+
 def smarttv(request):
-    return render(request, 'itproducts/smarttv.html'{'title': 'smarttv'})
+    return render(request, 'itproducts/smarttv.html', {'title': 'smarttv'})
+
+
 def review(request):
     reviews = {
-          'reviews':Review.objects.all()
-         }
-    return render(request, 'itproducts/review.html',reviews)
- class PostListView(ListView):
+        'reviews': Review.objects.all()
+    }
+    return render(request, 'itproducts/review.html', reviews)
+
+    class PostListView(ListView):
+        model = Review
+        template_name = 'itproducts/review.html'
+        context_object_name = 'reviews'
+        ordering = ['-date']
+        paginate_by = 5
+
+    class PostDetailView(DetailView):
+        model = Review
+
+
+class PostCreateView(LoginRequiredMixin, CreateView):
     model = Review
-    template_name= 'itproducts/review.html'
-    context_object_name = 'reviews'
-    ordering = ['-date']
- class PostDetailView(DetailView):
-    model= Review
-
- 
+    fields = ['rating', 'details', 'products']
 
 
+def form_valid(self, form):
+    form.instance.author = self.request.user
+    return super().form_valid(form)
 
+
+class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Review
+    fields = ['rating', 'details', 'products']
+
+    def test_func(self):
+        Review = self.get_object()
+        if self.request.user == Review.author:
+            return True
+        return False
+
+
+class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Review
+    success_url = '/review'
+
+
+def test_func(self):
+    Review = self.get_object()
+    if self.request.user == Review.author:
+        return True
+    return False

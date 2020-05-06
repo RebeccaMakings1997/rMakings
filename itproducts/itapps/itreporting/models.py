@@ -18,7 +18,7 @@ class Review(models.Model):
          (1, 'SmartPhones'),
          (2, 'Smart Watches'),
          (3, 'Smart TVs'))
-         Products=models.IntegerField(choices=Product_CHOICES, default=0)
+         products=models.IntegerField(choices=Product_CHOICES, default=0)
          author=models.ForeignKey(User, on_delete=models.CASCADE)
 
 
@@ -37,3 +37,6 @@ class Product(models.Model):
 
 def __str__(self):
    return self.type
+
+def get_absolute_url(self):
+   return reverse('review-detail', kwargs={'pk': self.pk})
