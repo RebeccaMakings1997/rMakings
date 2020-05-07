@@ -51,6 +51,16 @@ class PostListView(ListView):
         ordering = ['-date']
         paginate_by = 5
 
+class UserPostListView(ListView):
+        model = Review
+        template_name = 'itproducts/user_review.html'
+        context_object_name = 'reviews'
+        ordering = ['-date']
+        paginate_by = 5
+def get_queryset(self):
+	user=get_object_or_404(User, username=self.kwargs.get('username'))
+	return Review.objects.filter(author=user). order_by('-date')
+
 class PostDetailView(DetailView):
         model = Review
 
