@@ -1,9 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Review
+from .models import Review, Product
 from django.shortcuts import render
-from.import views
-from djano.urls import reverse
+from django.contrib.auth.models import User
+from django.urls import reverse
+
+
 
 def home(request):
     return render(request, 'itproducts/home.html', {'title': 'Home'})
@@ -18,7 +20,10 @@ def contact(request):
 
 
 def products(request):
-    return render(request, 'itproducts/products.html', {'title': 'Products'})
+	products = {
+	'products': Product.objects.all()
+	}
+	return render(request, 'itproducts/products.html', products ,{'title': 'Products'})
 
 
 def smartphone(request):
@@ -35,18 +40,18 @@ def smarttv(request):
 
 def review(request):
     reviews = {
-        'reviews': Review.objects.all()
-    }
+    'reviews': Review.objects.all()
+        }
     return render(request, 'itproducts/review.html', reviews)
 
-    class PostListView(ListView):
+class PostListView(ListView):
         model = Review
         template_name = 'itproducts/review.html'
         context_object_name = 'reviews'
         ordering = ['-date']
         paginate_by = 5
 
-    class PostDetailView(DetailView):
+class PostDetailView(DetailView):
         model = Review
 
 
@@ -54,10 +59,9 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     model = Review
     fields = ['rating', 'details', 'products']
 
-
-def form_valid(self, form):
-    form.instance.author = self.request.user
-    return super().form_valid(form)
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
 
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
