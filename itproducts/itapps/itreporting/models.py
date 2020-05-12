@@ -1,6 +1,7 @@
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.db import models
+from django.urls import reverse
 
 
 class Review(models.Model):
@@ -24,7 +25,7 @@ class Review(models.Model):
     def __str__(self):
         return self.details
     def get_absolute_url(self):
-        return reverse('review-view', kwargs={"pk": self.pk})
+        return reverse('review-detail', kwargs={"pk": self.pk})
 
 
 class Product(models.Model):
@@ -44,3 +45,11 @@ class Product(models.Model):
         return self.name
     def get_absolute_url(self):
         return reverse('product-description', kwargs={'pk': self.pk})
+
+
+class Upcoming_Products(models.Model):
+ name = models.CharField(max_length=300)
+ brand = models.CharField(max_length=300)
+ release_date = models.DateField(max_length=8)
+ description = models.TextField()
+ image = models.ImageField(default= 'example.jpg', upload_to='media')
