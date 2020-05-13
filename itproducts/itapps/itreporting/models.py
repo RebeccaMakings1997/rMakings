@@ -53,3 +53,21 @@ class Upcoming_Products(models.Model):
  release_date = models.DateField(max_length=8)
  description = models.TextField()
  image = models.ImageField(default= 'example.jpg', upload_to='media')
+
+class Reviews_external(models.Model):
+
+    details = models.TextField()
+    Rating_CHOICES = (
+    (1, 'Poor'),
+    (2, 'Average'),
+    (3, 'Good'),
+    (4, 'Very Good'),
+    (5, 'Excellent'))
+    rating = models.IntegerField(choices=Rating_CHOICES, default=1)
+    date = models.DateTimeField(default=timezone.now)
+    Product_CHOICES = (
+    (1, 'SmartPhones'),
+    (2, 'Smart Watches'),
+    (3, 'Smart TVs'))
+    products = models.IntegerField(choices=Product_CHOICES, default=0)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
