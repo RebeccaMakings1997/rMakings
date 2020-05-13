@@ -40,7 +40,6 @@ class Product(models.Model):
     release_date = models.DateField(max_length=8)
     description = models.TextField()
     image = models.ImageField(default='example.jpg', upload_to='media')
-
     def __str__(self):
         return self.name
     def get_absolute_url(self):
